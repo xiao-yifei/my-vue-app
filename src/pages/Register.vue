@@ -1,10 +1,14 @@
 <script setup>
+defineOptions({ name: 'Register' })
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { register } from '@/api'
+import LegalModal from '@/components/LegalModal.vue'
 
 const router = useRouter()
+const showTermsModal = ref(false)
+const showPrivacyModal = ref(false)
 const username = ref('')
 const email = ref('')
 const password = ref('')
@@ -108,8 +112,16 @@ async function onSubmit() {
         <label class="checkbox-wrap">
           <input v-model="agreeTerms" type="checkbox" />
           <span class="checkmark"></span>
-          我已阅读并同意 <a href="#">用户协议</a> 和 <a href="#">隐私政策</a>
+          <span class="checkbox-text">
+            我已阅读并同意
+            <a href="#" @click.prevent.stop="showTermsModal = true">用户协议</a>
+            和
+            <a href="#" @click.prevent.stop="showPrivacyModal = true">隐私政策</a>
+          </span>
         </label>
+
+        <LegalModal v-model="showTermsModal" type="terms" />
+        <LegalModal v-model="showPrivacyModal" type="privacy" />
 
         <button type="submit" class="btn-register" :disabled="!agreeTerms || !passwordMatch || loading">
           {{ loading ? '注册中…' : '注 册' }}
@@ -147,7 +159,9 @@ async function onSubmit() {
 .register-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #0f172a 100%);
+  background:
+    linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.65) 50%, rgba(30, 41, 59, 0.78) 100%),
+    url('https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=1920&q=85') center/cover no-repeat;
 }
 
 .shape {

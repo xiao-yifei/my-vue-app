@@ -20,19 +20,19 @@
   --el-color-primary-light-8: #99f6e4;
   --el-color-primary-light-9: #ccfbf1;
   --el-color-primary-dark-2: #0f766e;
-  
+
   /* 背景色 - 深色主题 */
   --el-bg-color: #0f172a;
   --el-bg-color-page: #0f172a;
   --el-bg-color-overlay: rgba(15, 23, 42, 0.9);
-  
+
   /* 文字颜色 */
   --el-text-color-primary: #f1f5f9;
   --el-text-color-regular: #cbd5e1;
   --el-text-color-secondary: #94a3b8;
   --el-text-color-placeholder: #64748b;
   --el-text-color-disabled: #475569;
-  
+
   /* 边框颜色 */
   --el-border-color: rgba(148, 163, 184, 0.2);
   --el-border-color-light: rgba(148, 163, 184, 0.15);
@@ -40,7 +40,7 @@
   --el-border-color-extra-light: rgba(148, 163, 184, 0.05);
   --el-border-color-dark: rgba(148, 163, 184, 0.3);
   --el-border-color-darker: rgba(148, 163, 184, 0.4);
-  
+
   /* 填充色 */
   --el-fill-color: rgba(255, 255, 255, 0.08);
   --el-fill-color-light: rgba(255, 255, 255, 0.06);
@@ -49,23 +49,23 @@
   --el-fill-color-dark: rgba(255, 255, 255, 0.12);
   --el-fill-color-darker: rgba(255, 255, 255, 0.16);
   --el-fill-color-blank: transparent;
-  
+
   /* 禁用状态 */
   --el-disabled-bg-color: rgba(255, 255, 255, 0.04);
   --el-disabled-text-color: #475569;
   --el-disabled-border-color: rgba(148, 163, 184, 0.15);
-  
+
   /* 阴影 */
   --el-box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
   --el-box-shadow-light: 0px 2px 12px rgba(0, 0, 0, 0.2);
   --el-box-shadow-lighter: 0px 1px 6px rgba(0, 0, 0, 0.15);
   --el-box-shadow-dark: 0px 8px 32px rgba(0, 0, 0, 0.4);
-  
+
   /* 遮罩层 */
   --el-overlay-color: rgba(0, 0, 0, 0.6);
   --el-overlay-color-light: rgba(0, 0, 0, 0.4);
   --el-overlay-color-lighter: rgba(0, 0, 0, 0.2);
-  
+
   /* 遮罩层背景 */
   --el-mask-color: rgba(0, 0, 0, 0.6);
   --el-mask-color-extra-light: rgba(0, 0, 0, 0.3);
@@ -217,6 +217,70 @@ button:focus-visible {
 .el-message-box__btns .el-button--primary:hover {
   background-color: var(--el-color-primary-light-3);
   border-color: var(--el-color-primary-light-3);
+}
+
+/* ElDialog 深色主题 */
+.el-dialog {
+  background-color: rgba(15, 23, 42, 0.98);
+  border: 1px solid var(--el-border-color);
+  border-radius: 12px;
+  box-shadow: var(--el-box-shadow-dark);
+  backdrop-filter: blur(12px);
+}
+.el-dialog__header {
+  border-bottom: 1px solid var(--el-border-color);
+  padding: 1rem 1.25rem;
+}
+.el-dialog__title {
+  color: var(--el-text-color-primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.el-dialog__headerbtn .el-dialog__close {
+  color: var(--el-text-color-secondary);
+  font-size: 1rem;
+}
+.el-dialog__headerbtn:hover .el-dialog__close {
+  color: var(--el-text-color-primary);
+}
+.el-dialog__body {
+  color: var(--el-text-color-regular);
+  padding: 1.25rem;
+  line-height: 1.6;
+}
+.el-dialog__footer {
+  border-top: 1px solid var(--el-border-color);
+  padding: 1rem 1.25rem;
+}
+
+/* LegalModal：禁止 overlay 双滚动条 */
+.legal-modal-overlay,
+.legal-modal-overlay .el-overlay-dialog {
+  overflow: hidden;
+}
+
+html.app-theme-light .el-dialog {
+  background-color: rgba(255, 255, 255, 0.98);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+}
+html.app-theme-light .el-dialog__header {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+html.app-theme-light .el-dialog__title {
+  color: #1e293b;
+}
+html.app-theme-light .el-dialog__headerbtn .el-dialog__close {
+  color: #64748b;
+}
+html.app-theme-light .el-dialog__headerbtn:hover .el-dialog__close {
+  color: #1e293b;
+}
+html.app-theme-light .el-dialog__body {
+  color: #475569;
+}
+html.app-theme-light .el-dialog__footer {
+  border-top-color: rgba(0, 0, 0, 0.08);
 }
 
 .el-alert {

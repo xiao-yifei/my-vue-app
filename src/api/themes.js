@@ -1,7 +1,7 @@
 import request from '@/api/request.js'
 
 /**
- * 获取所有主题（发现区列表）
+ * 获取图库列表
  * @returns {Promise<Array>}
  */
 export function getThemes() {
@@ -12,8 +12,8 @@ export function getThemes() {
 }
 
 /**
- * 根据 id 获取单个主题（主题页详情与图集）
- * @param {string} id - 主题 id
+ * 根据 id 获取图库详情（含图集）
+ * @param {string} id - 图库 id
  * @returns {Promise<Object>}
  */
 export function getThemeById(id) {
@@ -24,7 +24,7 @@ export function getThemeById(id) {
 }
 
 /**
- * 创建主题
+ * 创建图库
  * @param {Object} data - { id, label, large?, ratio?, src?, alt?, images? }
  * @returns {Promise<Object>}
  */
@@ -37,8 +37,8 @@ export function createTheme(data) {
 }
 
 /**
- * 更新主题（全量）
- * @param {string} id - 主题 id
+ * 更新图库（全量）
+ * @param {string} id - 图库 id
  * @param {Object} data - { label, large?, ratio?, src?, alt?, images? }
  * @returns {Promise<Object>}
  */
@@ -51,8 +51,8 @@ export function updateTheme(id, data) {
 }
 
 /**
- * 删除主题
- * @param {string} id - 主题 id
+ * 删除图库
+ * @param {string} id - 图库 id
  * @returns {Promise<Object>}
  */
 export function deleteTheme(id) {

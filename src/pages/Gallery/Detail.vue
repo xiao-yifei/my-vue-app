@@ -1,4 +1,5 @@
 <script setup>
+defineOptions({ name: 'GalleryDetail' })
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
@@ -25,7 +26,7 @@ async function loadTheme() {
     const data = await fetchThemeById(id)
     theme.value = data
   } catch (err) {
-    const msg = err.response?.data?.message || err.message || '加载主题失败'
+    const msg = err.response?.data?.message || err.message || '加载图库失败'
     error.value = msg
     ElMessage.error(msg)
   } finally {
@@ -38,7 +39,7 @@ watch(() => route.params.id, loadTheme, { immediate: true })
 watch(
   theme,
   (t) => {
-    document.title = t ? `${t.label} - 主题 - my-vue-app` : '主题 - my-vue-app'
+    document.title = t ? `${t.label} - 图库 - my-vue-app` : '图库 - my-vue-app'
   },
   { immediate: true }
 )
@@ -46,7 +47,7 @@ watch(
 const previewList = computed(() => theme.value?.images?.map((i) => i.src) ?? [])
 
 function goBack() {
-  router.push('/home')
+  router.back()
 }
 </script>
 
@@ -57,14 +58,15 @@ function goBack() {
       <div class="shape shape-2"></div>
     </div>
 
+    <div class="theme-scroll">
     <p v-if="loading" class="theme-loading">加载中…</p>
     <div v-else-if="error" class="theme-error-wrap">
       <p class="theme-error">{{ error }}</p>
-      <button type="button" class="btn-back" @click="goBack">返回发现</button>
+      <button type="button" class="btn-back" @click="goBack">返回上一页</button>
     </div>
     <div v-else-if="theme" class="theme-container">
       <header class="theme-header">
-        <button type="button" class="btn-back" @click="goBack">← 返回发现</button>
+        <button type="button" class="btn-back" @click="goBack">← 返回上一页</button>
         <h1 class="theme-title">{{ theme.label }}</h1>
         <p class="theme-desc">该主题下更多图片</p>
       </header>
@@ -90,8 +92,9 @@ function goBack() {
     </div>
 
     <div v-else class="theme-empty">
-      <p>未找到该主题</p>
-      <button type="button" class="btn-back" @click="goBack">返回发现</button>
+      <p>未找到该图库</p>
+      <button type="button" class="btn-back" @click="goBack">返回上一页</button>
+    </div>
     </div>
   </div>
 </template>
@@ -103,11 +106,21 @@ function goBack() {
   --card-border: rgba(255, 255, 255, 0.12);
   --text: #f1f5f9;
   --text-muted: #94a3b8;
-  min-height: 100vh;
-  padding: 1.5rem;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   position: relative;
-  overflow-x: hidden;
+  overflow: hidden;
   font-family: 'Outfit', system-ui, sans-serif;
+}
+
+.theme-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1.5rem;
+  -webkit-overflow-scrolling: touch;
 }
 
 .theme-bg {

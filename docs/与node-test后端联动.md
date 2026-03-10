@@ -18,6 +18,8 @@ npm start
 - `POST /api/auth/login` — 登录（username, password）
 - `GET /api/auth/me` — 获取当前用户（需 Bearer token）
 - `POST /api/auth/logout` — 退出（需 Bearer token）
+- `POST /api/auth/forgot-password` — 忘记密码（email），发送重置链接
+- `POST /api/auth/reset-password` — 重置密码（token, password）
 - `GET /api/themes` — 获取全部主题（发现页列表）
 - `GET /api/themes/:id` — 根据 id 获取单个主题（主题详情页）
 
@@ -44,6 +46,9 @@ npm run dev
 ## 4. 注意事项
 
 - **登录**：node-test 仅支持用 **用户名** 登录（不支持用邮箱登录），请使用注册时的用户名。
+- **忘记密码**：
+  - 未配置 SMTP：重置链接会打印到后端控制台，请复制到浏览器访问。
+  - 配置 SMTP：复制 `node-test/.env.example` 为 `.env`，填写 `SMTP_HOST`、`SMTP_USER`、`SMTP_PASS` 等，重启后端即可发送真实邮件。Gmail 需开启两步验证并创建「应用专用密码」。
 - **生产/其他环境**：若前端与后端不同域，在 my-vue-app 根目录配置 `.env` 或 `.env.production`，设置 `VITE_API_BASE_URL=http(s)://你的后端地址/api`，打包后请求会发往该地址。
 - **CORS**：node-test 已设置 `Access-Control-Allow-Origin: *`，跨域请求可正常使用。
 

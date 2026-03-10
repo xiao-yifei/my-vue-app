@@ -1,16 +1,17 @@
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { ElMessage, ElMessageBox } from 'element-plus'
+defineOptions({ name: 'GalleryConfig' })
 import {
-  getThemes,
   createTheme,
-  updateTheme,
   deleteTheme,
+  getThemes,
+  updateTheme,
 } from '@/api'
+import FileUpload from '@/components/FileUpload.vue'
 import { getUserInfo } from '@/utils/auth.js'
 import { canManageThemes } from '@/utils/permission.js'
-import FileUpload from '@/components/FileUpload.vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { onMounted, reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const list = ref([])
@@ -43,7 +44,7 @@ async function loadList() {
     const data = await getThemes()
     list.value = Array.isArray(data) ? data : []
   } catch (err) {
-    const msg = err.response?.data?.message || err.message || '加载主题列表失败'
+    const msg = err.response?.data?.message || err.message || '加载图库列表失败'
     error.value = msg
     ElMessage.error(msg)
     list.value = []
@@ -59,6 +60,31 @@ onMounted(() => {
   }
   loadList()
 })
+
+function slugify(label) {
+  const s = label
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9\u4e00-\u9fa5-]/g, '')
+    .replace(/^-+|-+$/g, '')
+  if (s) return s
+  const hash = Math.abs(
+    [...label].reduce((h, c) => ((h << 5) - h + c.charCodeAt(0)) | 0, 0)
+  )
+  return 'theme-' + hash.toString(36)
+}
+
+function generateUniqueId(label, existingIds) {
+  const slug = slugify(label) || 'theme'
+  let id = slug
+  let n = 0
+  while (existingIds.has(id)) {
+    n++
+    id = slug + '-' + n
+  }
+  return id
+}
 
 function resetForm() {
   isEdit.value = false
@@ -96,22 +122,20 @@ function removeImageRow(index) {
   form.images.splice(index, 1)
 }
 
-function goBack() {
-  router.push('/home')
-}
-
 async function submit() {
   formError.value = ''
-  const id = form.id.trim()
   const label = form.label.trim()
-  if (!id) {
-    formError.value = '请填写主题 ID'
-    return
-  }
   if (!label) {
-    formError.value = '请填写主题名称'
+    formError.value = '请填写图库名称'
     return
   }
+
+  const id = isEdit.value
+    ? form.id
+    : generateUniqueId(
+        label,
+        new Set(list.value.map((t) => t.id))
+      )
 
   const images = form.images
     .filter((i) => (i.src && i.src.trim()) || (i.alt && i.alt.trim()))
@@ -152,7 +176,7 @@ async function submit() {
 async function remove(theme) {
   try {
     await ElMessageBox.confirm(
-      `确定删除主题「${theme.label}」吗？此操作不可恢复。`,
+      `确定删除图库「${theme.label}」吗？此操作不可恢复。`,
       '确认删除',
       {
         confirmButtonText: '删除',
@@ -185,9 +209,8 @@ async function remove(theme) {
 
     <div class="config-container">
       <header class="config-header">
-        <button type="button" class="btn-back" @click="goBack">← 返回首页</button>
-        <h1 class="config-title">主题配置</h1>
-        <p class="config-desc">管理发现页主题列表，可新增、编辑、删除主题</p>
+        <h1 class="config-title">图库配置</h1>
+        <p class="config-desc">管理图库列表，可新增、编辑、删除图库</p>
       </header>
 
       <p v-if="loading" class="config-loading">加载中…</p>
@@ -196,8 +219,8 @@ async function remove(theme) {
       <div v-else class="config-layout">
         <section class="config-list">
           <div class="list-header">
-            <h2>主题列表</h2>
-            <button type="button" class="btn-primary" @click="resetForm">+ 新增主题</button>
+            <h2>图库列表</h2>
+            <button type="button" class="btn-primary" @click="resetForm">+ 新增图库</button>
           </div>
           <ul class="theme-list">
             <li
@@ -211,7 +234,6 @@ async function remove(theme) {
               <div v-else class="theme-thumb theme-thumb-placeholder">无图</div>
               <div class="theme-meta">
                 <span class="theme-label">{{ t.label }}</span>
-                <span class="theme-id">{{ t.id }}</span>
               </div>
               <div class="theme-actions">
                 <button type="button" class="btn-sm btn-edit" @click.stop="setForm(t)">编辑</button>
@@ -219,25 +241,14 @@ async function remove(theme) {
               </div>
             </li>
           </ul>
-          <p v-if="!list.length" class="list-empty">暂无主题，请点击「新增主题」添加</p>
+          <p v-if="!list.length" class="list-empty">暂无图库，请点击「新增图库」添加</p>
         </section>
 
         <section class="config-form-wrap">
-          <h2>{{ isEdit ? '编辑主题' : '新增主题' }}</h2>
+          <h2>{{ isEdit ? '编辑图库' : '新增图库' }}</h2>
           <form class="config-form" @submit.prevent="submit">
             <div class="form-row">
-              <label>主题 ID <span class="required">*</span></label>
-              <input
-                v-model="form.id"
-                type="text"
-                placeholder="如 gradient、forest"
-                :disabled="isEdit"
-                class="input"
-              />
-              <span v-if="isEdit" class="form-hint">编辑时不可修改 ID</span>
-            </div>
-            <div class="form-row">
-              <label>主题名称 <span class="required">*</span></label>
+              <label>图库名称 <span class="required">*</span></label>
               <input v-model="form.label" type="text" placeholder="如 森林、星空" class="input" />
             </div>
             <div class="form-row row-inline">
@@ -311,21 +322,23 @@ async function remove(theme) {
                 </button>
               </div>
             </div>
-
             <p v-if="formError" class="form-error">{{ formError }}</p>
-            <div class="form-actions">
+          <div class="form-actions">
               <button
                 type="submit"
                 class="btn-primary"
                 :disabled="submitLoading"
               >
-                {{ submitLoading ? '保存中…' : (isEdit ? '保存修改' : '创建主题') }}
+                {{ submitLoading ? '保存中…' : (isEdit ? '保存修改' : '创建图库') }}
               </button>
               <button v-if="isEdit" type="button" class="btn-secondary" @click="resetForm">
                 取消
               </button>
             </div>
+
           </form>
+
+
         </section>
       </div>
     </div>
@@ -357,6 +370,7 @@ async function remove(theme) {
   border-radius: 50%;
   filter: blur(80px);
   opacity: 0.5;
+  overflow: hidden;
 }
 
 .shape-1 {
@@ -383,26 +397,6 @@ async function remove(theme) {
 
 .config-header {
   margin-bottom: 1.5rem;
-}
-
-.btn-back {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.5rem 0.75rem;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-  font-family: inherit;
-  color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  border-radius: 10px;
-  cursor: pointer;
-  transition: color 0.2s, border-color 0.2s;
-}
-
-.btn-back:hover {
-  color: var(--text);
-  border-color: var(--accent);
 }
 
 .config-title {
@@ -525,11 +519,6 @@ async function remove(theme) {
   text-overflow: ellipsis;
 }
 
-.theme-id {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
 .theme-actions {
   display: flex;
   gap: 0.35rem;
@@ -595,6 +584,8 @@ async function remove(theme) {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  max-height: 60vh;
+  overflow-y: auto;
 }
 
 .form-row {

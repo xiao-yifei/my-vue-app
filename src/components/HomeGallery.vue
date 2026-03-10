@@ -20,7 +20,7 @@ onMounted(async () => {
     const data = await getThemes()
     themesList.value = Array.isArray(data) ? data : []
   } catch (err) {
-    const msg = err.response?.data?.message || err.message || '加载主题失败'
+    const msg = err.response?.data?.message || err.message || '加载图库失败'
     error.value = msg
     ElMessage.error(msg)
     themesList.value = []
@@ -47,8 +47,8 @@ const filteredThemes = computed(() => {
           :value="searchQuery"
           type="text"
           class="search-input"
-          placeholder="搜索主题（如：森林、星空）"
-          aria-label="搜索主题"
+          placeholder="搜索图库（如：森林、星空）"
+          aria-label="搜索图库"
           @input="emit('update:searchQuery', ($event.target || $event).value)"
         />
       </div>
@@ -76,7 +76,7 @@ const filteredThemes = computed(() => {
         <span class="gallery-label">{{ item.label }}</span>
       </router-link>
     </div>
-    <p v-else class="search-empty">暂无匹配的主题</p>
+    <p v-else class="search-empty">暂无匹配的图库</p>
   </section>
 </template>
 

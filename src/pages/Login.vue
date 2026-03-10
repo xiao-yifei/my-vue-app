@@ -1,4 +1,5 @@
 <script setup>
+defineOptions({ name: 'Login' })
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
@@ -97,7 +98,7 @@ async function onSubmit() {
             <span class="checkmark"></span>
             记住我
           </label>
-          <a href="#" class="forgot">忘记密码？</a>
+          <router-link to="/forgot-password" class="forgot">忘记密码？</router-link>
         </div>
 
         <button type="submit" class="btn-login" :disabled="loading">
@@ -136,7 +137,9 @@ async function onSubmit() {
 .login-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #0f172a 100%);
+  background:
+    linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.65) 50%, rgba(30, 41, 59, 0.78) 100%),
+    url('https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=1920&q=85') center/cover no-repeat;
 }
 
 .shape {

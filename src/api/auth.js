@@ -36,3 +36,29 @@ export function logout() {
     method: 'post',
   })
 }
+
+/**
+ * 请求重置密码（发送验证码/链接到邮箱）
+ * @param {Object} data - { email }
+ * @returns {Promise}
+ */
+export function requestPasswordReset(data) {
+  return request({
+    url: '/auth/forgot-password',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ * 重置密码（使用 token + 新密码）
+ * @param {Object} data - { token, password }
+ * @returns {Promise}
+ */
+export function resetPassword(data) {
+  return request({
+    url: '/auth/reset-password',
+    method: 'post',
+    data,
+  })
+}
